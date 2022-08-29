@@ -74,30 +74,20 @@ const menu = [
 ];
 
 const sectionCenter = document.querySelector(".section-center");
-const filterBtns = document.querySelectorAll(".filter-btn");
+const btnContainer = document.querySelector(".btn-container");
 
 // load Items
 window.addEventListener("DOMContentLoaded", function () {
+  // display menu items
   const items = displayMenuItems(menu);
   sectionCenter.insertAdjacentHTML("afterbegin", items);
+
+  // load items
+
+  displayMenuButons();
 });
 
-// Filter items
-filterBtns.forEach((btn) => {
-  btn.addEventListener("click", function (e) {
-    console.log(e.currentTarget.dataset.id);
-    const category = e.currentTarget.dataset.id;
-    const menuCategory = menu.filter((item) => item.category === category);
-    const items =
-      category === "all"
-        ? displayMenuItems(menu)
-        : displayMenuItems(menuCategory);
-    sectionCenter.innerHTML = "";
-    sectionCenter.insertAdjacentHTML("afterbegin", items);
-  });
-});
-
-const displayMenuItems = function (menuItems) {
+function displayMenuItems(menuItems) {
   const displayMenu = menuItems.map((item) => {
     return `
     <article class="menu-item">
@@ -114,4 +104,43 @@ const displayMenuItems = function (menuItems) {
     `;
   });
   return displayMenu.join("");
-};
+}
+
+function displayMenuButons() {
+  // const categories = new Set(menu.map((item) => item.category));
+  const categories = menu.reduce(
+    function (values, item) {
+      if (!values.includes(item.category)) {
+        values.push(item.category);
+      }
+      return values;
+    },
+    ["all"]
+  );
+  const categoryBtns = categories
+    .map((cat) => {
+      return `
+    <button class="filter-btn" data-id="${cat}" type="button">
+          ${cat}
+        </button>
+    `;
+    })
+    .join("");
+  btnContainer.insertAdjacentHTML("afterbegin", categoryBtns);
+  const filterBtns = document.querySelectorAll(".filter-btn");
+
+  // Filter items
+  filterBtns.forEach((btn) => {
+    btn.addEventListener("click", function (e) {
+      // console.log(e.currentTarget.dataset.id);
+      const category = e.currentTarget.dataset.id;
+      const menuCategory = menu.filter((item) => item.category === category);
+      const items =
+        category === "all"
+          ? displayMenuItems(menu)
+          : displayMenuItems(menuCategory);
+      sectionCenter.innerHTML = "";
+      sectionCenter.insertAdjacentHTML("afterbegin", items);
+    });
+  });
+}
