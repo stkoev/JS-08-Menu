@@ -74,10 +74,27 @@ const menu = [
 ];
 
 const sectionCenter = document.querySelector(".section-center");
+const filterBtns = document.querySelectorAll(".filter-btn");
 
+// load Items
 window.addEventListener("DOMContentLoaded", function () {
   const items = displayMenuItems(menu);
   sectionCenter.insertAdjacentHTML("afterbegin", items);
+});
+
+// Filter items
+filterBtns.forEach((btn) => {
+  btn.addEventListener("click", function (e) {
+    console.log(e.currentTarget.dataset.id);
+    const category = e.currentTarget.dataset.id;
+    const menuCategory = menu.filter((item) => item.category === category);
+    const items =
+      category === "all"
+        ? displayMenuItems(menu)
+        : displayMenuItems(menuCategory);
+    sectionCenter.innerHTML = "";
+    sectionCenter.insertAdjacentHTML("afterbegin", items);
+  });
 });
 
 const displayMenuItems = function (menuItems) {
